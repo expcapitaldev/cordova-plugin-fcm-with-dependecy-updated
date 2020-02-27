@@ -5,6 +5,14 @@ function FCMPlugin() {
   console.log("FCMPlugin.js: is created");
 }
 
+// REGISTER FOR REMOTE NOTIFICATIONS
+FCMPlugin.prototype.registerForRemoteNotifications = function() {
+  if (cordova.platformId !== "ios") {
+    return;
+  }
+  exec(null, null, "FCMPlugin", "registerForRemoteNotifications", []);
+};
+               
 // CHECK FOR PERMISSION
 FCMPlugin.prototype.hasPermission = function(success, error) {
   if (cordova.platformId !== "ios") {

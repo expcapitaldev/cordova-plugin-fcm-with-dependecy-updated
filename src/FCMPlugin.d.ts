@@ -14,6 +14,8 @@ export interface INotificationData {
 }
 
 export interface FCMPlugin {
+  registerForRemoteNotifications(): void;
+
   hasPermission(
     onSuccess: (doesIt: boolean | null) => void,
     onError?: (error: Error) => void

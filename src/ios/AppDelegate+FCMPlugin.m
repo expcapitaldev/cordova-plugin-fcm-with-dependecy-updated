@@ -50,37 +50,13 @@ NSString *const kGCMMessageIDKey = @"gcm.message_id";
     }
     // [END configure_firebase]
     
-    // iOS 9 or earlier Disable the deprecation warnings.
-    // [START register_for_notifications]
-    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_9_x_Max) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        UIUserNotificationType allNotificationTypes =
-        (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
-        UIUserNotificationSettings *settings =
-        [UIUserNotificationSettings settingsForTypes:allNotificationTypes categories:nil];
-        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-        [[UIApplication sharedApplication] registerForRemoteNotifications];
-#pragma clang diagnostic pop
-    } else {
-        // iOS 10 or later
 #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-        UNAuthorizationOptions authOptions = UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge;
-        [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:authOptions completionHandler:^(BOOL granted, NSError * _Nullable error) {
-            if (granted) {
-                [[UIApplication sharedApplication] registerForRemoteNotifications];
-            } else {
-                NSLog(@"User Notification permission denied: %@", error.localizedDescription);
-            }
-        }];
-        
-        // For iOS 10 display notification (sent via APNS)
-        [UNUserNotificationCenter currentNotificationCenter].delegate = self;
-        // For iOS 10 data message (sent via FCM)
-        [FIRMessaging messaging].delegate = self;
+    // For iOS 10 display notification (sent via APNS)
+    [UNUserNotificationCenter currentNotificationCenter].delegate = self;
+    // For iOS 10 data message (sent via FCM)
+    [FIRMessaging messaging].delegate = self;
 #endif
-    }
-    // [END register_for_notifications]
+    
     return YES;
 }
 

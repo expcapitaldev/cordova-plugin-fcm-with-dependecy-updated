@@ -47,6 +47,36 @@ static FCMPlugin *fcmPluginInstance;
     }];
 }
 
+- (void)registerForRemoteNotifications:(CDVInvokedUrlCommand*)command
+{
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_9_x_Max) {
+    // iOS 9 or earlier Disable the deprecation warnings.
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        UIUserNotificationType allNotificationTypes =
+        (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
+        UIUserNotificationSettings *settings =
+        [UIUserNotificationSettings settingsForTypes:allNotificationTypes categories:nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+    #pragma clang diagnostic pop
+    } else {
+    // iOS 10 or later
+    #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+        UNAuthorizationOptions authOptions = UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge;
+        [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:authOptions completionHandler:^(BOOL granted, NSError * _Nullable error) {
+            if (granted) {
+                [self runOnMainThread:^{
+                    [[UIApplication sharedApplication] registerForRemoteNotifications];
+                }];
+            } else {
+                NSLog(@"User Notification permission denied: %@", error.localizedDescription);
+            }
+        }];
+    #endif
+    }
+}
+
 // HAS PERMISSION //
 - (void) hasPermission:(CDVInvokedUrlCommand *)command
 {
@@ -189,6 +219,16 @@ static FCMPlugin *fcmPluginInstance;
         [FCMPlugin.fcmPlugin notifyOfMessage:lastPush];
     }
     appInForeground = YES;
+}
+
+-(void)runOnMainThread:(void (^)(void))block {
+    if ([NSThread isMainThread]) {
+      block();
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            block();
+        });
+    }
 }
 
 @end
