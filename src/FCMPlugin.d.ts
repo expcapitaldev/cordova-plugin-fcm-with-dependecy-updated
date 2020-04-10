@@ -52,8 +52,6 @@ export interface FCMPlugin {
   ): void;
 
   onTokenRefresh(
-    callback: (token: string) => void,
-    onSuccess?: (message: string) => void,
-    onError?: (error: Error) => void
+    callback: (token: string) => void, // return token immediately if exist
   ): void;
 }

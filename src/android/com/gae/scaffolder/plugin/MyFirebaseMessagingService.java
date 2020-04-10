@@ -25,6 +25,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(String token) {
         super.onNewToken(token);
         Log.d(TAG, "New token: " + token);
+
+		// https://firebase.google.com/docs/cloud-messaging/android/client#monitor-token-generation
+		// https://firebase.google.com/docs/reference/android/com/google/firebase/messaging/FirebaseMessagingService.html#public-method-summary
+        FCMPlugin.onTokenRefresh(token);
     }
 
     /**

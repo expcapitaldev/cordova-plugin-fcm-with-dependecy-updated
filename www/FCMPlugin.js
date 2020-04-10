@@ -40,7 +40,8 @@ FCMPlugin.prototype.onNotification = function(callback, success, error) {
 
 // TOKEN REFRESH CALLBACK //
 FCMPlugin.prototype.onTokenRefresh = function(callback) {
-  FCMPlugin.prototype.onTokenRefreshReceived = callback;
+	FCMPlugin.prototype.onTokenRefreshReceived = callback;
+	exec(null, null, "FCMPlugin", "onTokenRefreshReceived", []);
 };
 
 // GET TOKEN //

@@ -29,12 +29,15 @@ public class FCMPlugin extends CordovaPlugin {
     public static String notificationCallBack = "FCMPlugin.onNotificationReceived";
     public static String tokenRefreshCallBack = "FCMPlugin.onTokenRefreshReceived";
     public static Boolean notificationCallBackReady = false;
+    public static Boolean onTokenRefreshCallBackReady = false;
     public static Map<String, Object> lastPush = null;
 
     protected Context context = null;
     protected static OnFinishedListener<JSONObject> notificationFn = null;
     private static final String TAG = "FCMPlugin";
     private static CordovaPlugin instance = null;
+
+    private static String fcmToken = null;
 
     public FCMPlugin() {}
     public FCMPlugin(Context context) {
@@ -104,6 +107,11 @@ public class FCMPlugin extends CordovaPlugin {
                     }
                 });
             }
+			// TOKEN REFRESH CALLBACK REGISTER //
+			else if (action.equals("onTokenRefreshReceived")) {
+				onTokenRefreshCallBackReady = true;
+				FCMPlugin.sendTokenRefresh();
+			}
             // UN/SUBSCRIBE TOPICS //
             else if (action.equals("subscribeToTopic")) {
                 cordova.getThreadPool().execute(new Runnable() {
@@ -187,6 +195,7 @@ public class FCMPlugin extends CordovaPlugin {
 
                     // Get new Instance ID token
                     String newToken = task.getResult().getToken();
+                    fcmToken = newToken;
 
                     Log.i(TAG, "\tToken: " + newToken);
                     callback.success(newToken);
@@ -262,20 +271,35 @@ public class FCMPlugin extends CordovaPlugin {
         }
     }
 
-    public static void sendTokenRefresh(String token) {
-        Log.d(TAG, "==> FCMPlugin sendRefreshToken");
-        try {
-            String callBack = "javascript:" + tokenRefreshCallBack + "('" + token + "')";
-            gWebView.sendJavascript(callBack);
-        } catch (Exception e) {
-            Log.d(TAG, "\tERROR sendRefreshToken: " + e.getMessage());
-        }
-    }
+    public static void onTokenRefresh(String token) {
+            Log.d(TAG, "==> FCMPlugin onTokenRefresh");
+            fcmToken = token;
+            FCMPlugin.sendTokenRefresh();
+	}
+
+	public static void sendTokenRefresh() {
+		Log.d(TAG, "==> FCMPlugin sendRefreshToken");
+		Log.d(TAG, "\tonTokenRefreshCallBackReady: " + onTokenRefreshCallBackReady);
+		Log.d(TAG, "\tgWebView: " + gWebView);
+
+		if (onTokenRefreshCallBackReady && gWebView != null && fcmToken != null) {
+			try {
+				String callBack = "javascript:" + tokenRefreshCallBack + "('" + fcmToken + "')";
+				gWebView.sendJavascript(callBack);
+			} catch (Exception e) {
+				Log.d(TAG, "\tERROR sendRefreshToken: " + e.getMessage());
+			}
+
+		} else {
+			Log.d(TAG, "\tsendTokenRefresh not ready");
+		}
+	}
 
     @Override
     public void onDestroy() {
         gWebView = null;
         notificationCallBackReady = false;
+        onTokenRefreshCallBackReady = false;
     }
 
     protected Context getContext() {
