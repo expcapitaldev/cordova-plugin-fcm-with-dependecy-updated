@@ -41,6 +41,9 @@ FCMPlugin.prototype.onNotification = function(callback, success, error) {
 // TOKEN REFRESH CALLBACK //
 FCMPlugin.prototype.onTokenRefresh = function(callback) {
 	FCMPlugin.prototype.onTokenRefreshReceived = callback;
+	if (cordova.platformId === "ios") { // command must be send only on android, ios works fine with onTokenRefreshReceived
+		return;
+	}
 	exec(null, null, "FCMPlugin", "onTokenRefreshReceived", []);
 };
 
