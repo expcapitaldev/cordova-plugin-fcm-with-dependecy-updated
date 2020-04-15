@@ -16,6 +16,7 @@ static BOOL appInForeground = YES;
 
 static NSString *notificationCallback = @"FCMPlugin.onNotificationReceived";
 static NSString *tokenRefreshCallback = @"FCMPlugin.onTokenRefreshReceived";
+static NSString *apnsTokenRefreshCallback = @"FCMPlugin.onAPNSTokenRefreshReceived";
 static NSString *apnsToken = nil;
 static NSString *fcmToken = nil;
 static FCMPlugin *fcmPluginInstance;
@@ -63,15 +64,21 @@ static FCMPlugin *fcmPluginInstance;
     } else {
     // iOS 10 or later
     #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+        __weak FCMPlugin* weakSelf = self;
         UNAuthorizationOptions authOptions = UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge;
         [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:authOptions completionHandler:^(BOOL granted, NSError * _Nullable error) {
+             CDVPluginResult *result = nil;
+            
             if (granted) {
-                [self runOnMainThread:^{
+                result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
+                [weakSelf runOnMainThread:^{
                     [[UIApplication sharedApplication] registerForRemoteNotifications];
                 }];
             } else {
                 NSLog(@"User Notification permission denied: %@", error.localizedDescription);
+                result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:NO];
             }
+            [weakSelf.commandDelegate sendPluginResult:result callbackId:command.callbackId];
         }];
     #endif
     }
@@ -182,13 +189,7 @@ static FCMPlugin *fcmPluginInstance;
 {
     NSString *JSONString = [[NSString alloc] initWithBytes:[payload bytes] length:[payload length] encoding:NSUTF8StringEncoding];
     NSString * notifyJS = [NSString stringWithFormat:@"%@(%@);", notificationCallback, JSONString];
-    NSLog(@"stringByEvaluatingJavaScriptFromString %@", notifyJS);
-    
-    if ([self.webView respondsToSelector:@selector(stringByEvaluatingJavaScriptFromString:)]) {
-        [(UIWebView *)self.webView stringByEvaluatingJavaScriptFromString:notifyJS];
-    } else {
-        [self.webViewEngine evaluateJavaScript:notifyJS completionHandler:nil];
-    }
+    [self evaluateJavaScriptString: notifyJS];
 }
 
 -(void) notifyFCMTokenRefresh:(NSString *)token
@@ -196,12 +197,24 @@ static FCMPlugin *fcmPluginInstance;
     NSLog(@"notifyFCMTokenRefresh token: %@", token);
     fcmToken = token;
     NSString * notifyJS = [NSString stringWithFormat:@"%@('%@');", tokenRefreshCallback, token];
-    NSLog(@"stringByEvaluatingJavaScriptFromString %@", notifyJS);
+    [self evaluateJavaScriptString: notifyJS];
+}
+
+-(void) notifyAPNSTokenRefresh:(NSString *)token
+{
+    NSLog(@"notifyAPNSTokenRefresh token: %@", token);
+    apnsToken = token;
+    NSString * notifyJS = [NSString stringWithFormat:@"%@('%@');", apnsTokenRefreshCallback, token];
+    [self evaluateJavaScriptString: notifyJS];
+}
+
+-(void) evaluateJavaScriptString:(NSString *)jsString {
+    NSLog(@"stringByEvaluatingJavaScriptFromString %@", jsString);
     
     if ([self.webView respondsToSelector:@selector(stringByEvaluatingJavaScriptFromString:)]) {
-        [(UIWebView *)self.webView stringByEvaluatingJavaScriptFromString:notifyJS];
+        [(UIWebView *)self.webView stringByEvaluatingJavaScriptFromString:jsString];
     } else {
-        [self.webViewEngine evaluateJavaScript:notifyJS completionHandler:nil];
+        [self.webViewEngine evaluateJavaScript:jsString completionHandler:nil];
     }
 }
 

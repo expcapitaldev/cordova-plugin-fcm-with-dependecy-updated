@@ -10,6 +10,7 @@
 + (void)setInitialAPNSToken:(NSString*) token;
 + (void)setInitialFCMToken:(NSString*) token;
 - (void)notifyFCMTokenRefresh:(NSString*) token;
+- (void)notifyAPNSTokenRefresh:(NSString*) token;
 - (void)ready:(CDVInvokedUrlCommand*)command;
 - (void)registerForRemoteNotifications:(CDVInvokedUrlCommand*)command;
 - (void)hasPermission:(CDVInvokedUrlCommand*)command;

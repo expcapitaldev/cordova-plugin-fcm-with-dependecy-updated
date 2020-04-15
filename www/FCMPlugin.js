@@ -6,11 +6,12 @@ function FCMPlugin() {
 }
 
 // REGISTER FOR REMOTE NOTIFICATIONS
-FCMPlugin.prototype.registerForRemoteNotifications = function() {
+FCMPlugin.prototype.registerForRemoteNotifications = function(success, error) {
   if (cordova.platformId !== "ios") {
+    success(true);
     return;
   }
-  exec(null, null, "FCMPlugin", "registerForRemoteNotifications", []);
+  exec(success, error, "FCMPlugin", "registerForRemoteNotifications", []);
 };
                
 // CHECK FOR PERMISSION
@@ -47,6 +48,11 @@ FCMPlugin.prototype.onTokenRefresh = function(callback) {
 	exec(null, null, "FCMPlugin", "onTokenRefreshReceived", []);
 };
 
+// APNS TOKEN REFRESH CALLBACK //
+FCMPlugin.prototype.onAPNSTokenRefresh = function(callback) {
+  FCMPlugin.prototype.onAPNSTokenRefreshReceived = callback;
+};
+
 // GET TOKEN //
 FCMPlugin.prototype.getToken = function(success, error) {
   exec(success, error, "FCMPlugin", "getToken", []);
@@ -75,6 +81,12 @@ FCMPlugin.prototype.onNotificationReceived = function(payload) {
 // DEFAULT TOKEN REFRESH CALLBACK //
 FCMPlugin.prototype.onTokenRefreshReceived = function(token) {
   console.log("Received token refresh");
+  console.log(token);
+};
+
+// DEFAULT APNS TOKEN REFRESH CALLBACK //
+FCMPlugin.prototype.onAPNSTokenRefreshReceived = function(token) {
+  console.log("Received APNS token refresh");
   console.log(token);
 };
 

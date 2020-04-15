@@ -161,6 +161,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 #endif
     apnsToken = deviceToken;
     [FCMPlugin setInitialAPNSToken:deviceToken];
+    [FCMPlugin.fcmPlugin notifyAPNSTokenRefresh:deviceToken];
     NSLog(@"Device APNS Token: %@", deviceToken);
 }
 

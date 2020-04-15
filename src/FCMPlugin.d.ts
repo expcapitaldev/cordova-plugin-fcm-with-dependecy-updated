@@ -14,7 +14,10 @@ export interface INotificationData {
 }
 
 export interface FCMPlugin {
-  registerForRemoteNotifications(): void;
+  registerForRemoteNotifications(
+    onSuccess?: (granted: boolean) => void,
+    onError?: (error: Error) => void
+  ): void;
 
   hasPermission(
     onSuccess: (doesIt: boolean | null) => void,
@@ -53,5 +56,9 @@ export interface FCMPlugin {
 
   onTokenRefresh(
     callback: (token: string) => void, // return token immediately if exist
+  ): void;
+
+  onAPNSTokenRefresh(
+    callback: (token: string) => void,
   ): void;
 }
