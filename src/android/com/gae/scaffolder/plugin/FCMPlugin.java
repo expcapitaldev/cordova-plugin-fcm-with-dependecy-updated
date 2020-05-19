@@ -2,7 +2,6 @@ package com.gae.scaffolder.plugin;
 
 import android.app.NotificationManager;
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.gae.scaffolder.plugin.interfaces.OnFinishedListener;
@@ -34,7 +33,7 @@ public class FCMPlugin extends CordovaPlugin {
 
     protected Context context = null;
     protected static OnFinishedListener<JSONObject> notificationFn = null;
-    private static final String TAG = "FCMPlugin";
+    public static final String TAG = "FCMPlugin";
     private static CordovaPlugin instance = null;
 
     private static String fcmToken = null;
@@ -148,6 +147,12 @@ public class FCMPlugin extends CordovaPlugin {
                         }
                     }
                 });
+            } else if (action.equals("createNotificationChannel")) {
+                cordova.getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        new FCMPluginChannelCreator(getContext()).createNotificationChannel(callbackContext, args);
+                    }
+                });
             } else {
                 callbackContext.error("Method not found");
                 return false;
@@ -181,7 +186,7 @@ public class FCMPlugin extends CordovaPlugin {
         try {
             FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                 @Override
-                public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                public void onComplete(Task<InstanceIdResult> task) {
                     if (!task.isSuccessful()) {
                         Log.w(TAG, "getInstanceId failed", task.getException());
                         try {
@@ -204,7 +209,7 @@ public class FCMPlugin extends CordovaPlugin {
 
             FirebaseInstanceId.getInstance().getInstanceId().addOnFailureListener(new OnFailureListener() {
                 @Override
-                public void onFailure(@NonNull final Exception e) {
+                public void onFailure(final Exception e) {
                     try {
                         Log.e(TAG, "Error retrieving token: ", e);
                         callback.error(exceptionToJson(e));
@@ -214,7 +219,10 @@ public class FCMPlugin extends CordovaPlugin {
                 }
             });
         } catch (Exception e) {
-            Log.d(TAG, "\tError retrieving token", e);
+            Log.w(TAG, "\tError retrieving token", e);
+            try {
+                callback.error(exceptionToJson(e));
+            } catch(JSONException je) {}
         }
     }
 
