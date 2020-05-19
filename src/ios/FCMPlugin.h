@@ -7,12 +7,8 @@
 }
 
 + (FCMPlugin *) fcmPlugin;
-+ (void)setInitialAPNSToken:(NSString*) token;
-+ (void)setInitialFCMToken:(NSString*) token;
 - (void)notifyFCMTokenRefresh:(NSString*) token;
-- (void)notifyAPNSTokenRefresh:(NSString*) token;
 - (void)ready:(CDVInvokedUrlCommand*)command;
-- (void)registerForRemoteNotifications:(CDVInvokedUrlCommand*)command;
 - (void)hasPermission:(CDVInvokedUrlCommand*)command;
 - (void)getToken:(CDVInvokedUrlCommand*)command;
 - (void)getAPNSToken:(CDVInvokedUrlCommand*)command;
@@ -21,6 +17,7 @@
 - (void)unsubscribeFromTopic:(CDVInvokedUrlCommand*)command;
 - (void)registerNotification:(CDVInvokedUrlCommand*)command;
 - (void)notifyOfMessage:(NSData*) payload;
+- (void)runJS:(NSString *)jsCode;
 - (void)appEnterBackground;
 - (void)appEnterForeground;
 

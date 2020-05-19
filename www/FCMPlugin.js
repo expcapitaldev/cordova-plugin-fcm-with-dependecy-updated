@@ -5,17 +5,8 @@ function FCMPlugin() {
   console.log("FCMPlugin.js: is created");
 }
 
-// REGISTER FOR REMOTE NOTIFICATIONS
-FCMPlugin.prototype.registerForRemoteNotifications = function(success, error) {
-  if (cordova.platformId !== "ios") {
-    success(true);
-    return;
-  }
-  exec(success, error, "FCMPlugin", "registerForRemoteNotifications", []);
-};
-               
 // CHECK FOR PERMISSION
-FCMPlugin.prototype.hasPermission = function(success, error) {
+FCMPlugin.prototype.hasPermission = function (success, error) {
   if (cordova.platformId !== "ios") {
     success(true);
     return;
@@ -24,42 +15,33 @@ FCMPlugin.prototype.hasPermission = function(success, error) {
 };
 
 // SUBSCRIBE TO TOPIC //
-FCMPlugin.prototype.subscribeToTopic = function(topic, success, error) {
+FCMPlugin.prototype.subscribeToTopic = function (topic, success, error) {
   exec(success, error, "FCMPlugin", "subscribeToTopic", [topic]);
 };
 
 // UNSUBSCRIBE FROM TOPIC //
-FCMPlugin.prototype.unsubscribeFromTopic = function(topic, success, error) {
+FCMPlugin.prototype.unsubscribeFromTopic = function (topic, success, error) {
   exec(success, error, "FCMPlugin", "unsubscribeFromTopic", [topic]);
 };
 
 // NOTIFICATION CALLBACK //
-FCMPlugin.prototype.onNotification = function(callback, success, error) {
+FCMPlugin.prototype.onNotification = function (callback, success, error) {
   FCMPlugin.prototype.onNotificationReceived = callback;
   exec(success, error, "FCMPlugin", "registerNotification", []);
 };
 
 // TOKEN REFRESH CALLBACK //
-FCMPlugin.prototype.onTokenRefresh = function(callback) {
-	FCMPlugin.prototype.onTokenRefreshReceived = callback;
-	if (cordova.platformId === "ios") { // command must be send only on android, ios works fine with onTokenRefreshReceived
-		return;
-	}
-	exec(null, null, "FCMPlugin", "onTokenRefreshReceived", []);
-};
-
-// APNS TOKEN REFRESH CALLBACK //
-FCMPlugin.prototype.onAPNSTokenRefresh = function(callback) {
-  FCMPlugin.prototype.onAPNSTokenRefreshReceived = callback;
+FCMPlugin.prototype.onTokenRefresh = function (callback) {
+  FCMPlugin.prototype.onTokenRefreshReceived = callback;
 };
 
 // GET TOKEN //
-FCMPlugin.prototype.getToken = function(success, error) {
+FCMPlugin.prototype.getToken = function (success, error) {
   exec(success, error, "FCMPlugin", "getToken", []);
 };
 
 // GET APNS TOKEN //
-FCMPlugin.prototype.getAPNSToken = function(success, error) {
+FCMPlugin.prototype.getAPNSToken = function (success, error) {
   if (cordova.platformId !== "ios") {
     success(null);
     return;
@@ -68,34 +50,42 @@ FCMPlugin.prototype.getAPNSToken = function(success, error) {
 };
 
 // CLEAR ALL NOTIFICATIONS //
-FCMPlugin.prototype.clearAllNotifications = function(success, error) {
+FCMPlugin.prototype.clearAllNotifications = function (success, error) {
   exec(success, error, "FCMPlugin", "clearAllNotifications", []);
 };
 
+// REQUEST IOS PUSH PERMISSION //
+FCMPlugin.prototype.requestPushPermissionIOS = function (success, error) {
+  if (cordova.platformId === "ios") {
+    exec(success, error, "FCMPlugin", "requestPushPermission", []);
+  }
+};
+
+// REQUEST THE CREATION OF A NOTIFICATION CHANNEL //
+FCMPlugin.prototype.createNotificationChannelAndroid = function (channelConfig, success, error) {
+  if (cordova.platformId === "android") {
+    exec(success, error, "FCMPlugin", "createNotificationChannel", [channelConfig]);
+  }
+};
+
 // DEFAULT NOTIFICATION CALLBACK //
-FCMPlugin.prototype.onNotificationReceived = function(payload) {
+FCMPlugin.prototype.onNotificationReceived = function (payload) {
   console.log("Received push notification");
   console.log(payload);
 };
 
 // DEFAULT TOKEN REFRESH CALLBACK //
-FCMPlugin.prototype.onTokenRefreshReceived = function(token) {
+FCMPlugin.prototype.onTokenRefreshReceived = function (token) {
   console.log("Received token refresh");
-  console.log(token);
-};
-
-// DEFAULT APNS TOKEN REFRESH CALLBACK //
-FCMPlugin.prototype.onAPNSTokenRefreshReceived = function(token) {
-  console.log("Received APNS token refresh");
   console.log(token);
 };
 
 // FIRE READY //
 exec(
-  function(result) {
+  function (result) {
     console.log("FCMPlugin Ready OK");
   },
-  function(result) {
+  function (result) {
     console.log("FCMPlugin Ready ERROR");
   },
   "FCMPlugin",
