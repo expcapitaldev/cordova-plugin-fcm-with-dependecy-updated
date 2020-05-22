@@ -18,6 +18,18 @@ This is a fork from https://github.com/fechanique/cordova-plugin-fcm, which has 
 
 Replaced `UIWebView` with `WKWebView`, as required by Apple (https://developer.apple.com/documentation/uikit/uiwebview).
 
+### Version 4.2.2 (16/04/2020)
+
+Reworked registerForRemoteNotifications to use callback with result. Added method to listen APNS token changes.
+
+### Version 4.2.1 (10/04/2020)
+
+fix(android): `onTokenRefresh` callback fixed.
+
+### Version 4.2.0 (23/01/2020)
+
+Change syntax for cordova 8.1.1
+
 ### Version 4.1.0 (26/10/2019)
 
 Older notifications can be cleared from notification center.
