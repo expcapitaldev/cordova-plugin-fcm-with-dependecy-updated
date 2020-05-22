@@ -5,6 +5,7 @@
 #import <Cordova/CDV.h>
 #import "FCMPlugin.h"
 #import "Firebase.h"
+#import <WebKit/WebKit.h>
 
 @interface FCMPlugin () {}
 @end
@@ -189,7 +190,7 @@ static FCMPlugin *fcmPluginInstance;
 {
     NSString *JSONString = [[NSString alloc] initWithBytes:[payload bytes] length:[payload length] encoding:NSUTF8StringEncoding];
     NSString * notifyJS = [NSString stringWithFormat:@"%@(%@);", notificationCallback, JSONString];
-    [self evaluateJavaScriptString: notifyJS];
+	[self runJS:notifyJS];
 }
 
 -(void) notifyFCMTokenRefresh:(NSString *)token
@@ -197,7 +198,7 @@ static FCMPlugin *fcmPluginInstance;
     NSLog(@"notifyFCMTokenRefresh token: %@", token);
     fcmToken = token;
     NSString * notifyJS = [NSString stringWithFormat:@"%@('%@');", tokenRefreshCallback, token];
-    [self evaluateJavaScriptString: notifyJS];
+	[self runJS:notifyJS];
 }
 
 -(void) notifyAPNSTokenRefresh:(NSString *)token
@@ -205,17 +206,17 @@ static FCMPlugin *fcmPluginInstance;
     NSLog(@"notifyAPNSTokenRefresh token: %@", token);
     apnsToken = token;
     NSString * notifyJS = [NSString stringWithFormat:@"%@('%@');", apnsTokenRefreshCallback, token];
-    [self evaluateJavaScriptString: notifyJS];
+	[self runJS:notifyJS];
 }
 
--(void) evaluateJavaScriptString:(NSString *)jsString {
-    NSLog(@"stringByEvaluatingJavaScriptFromString %@", jsString);
-    
-    if ([self.webView respondsToSelector:@selector(stringByEvaluatingJavaScriptFromString:)]) {
-        [(UIWebView *)self.webView stringByEvaluatingJavaScriptFromString:jsString];
-    } else {
-        [self.webViewEngine evaluateJavaScript:jsString completionHandler:nil];
-    }
+- (void)runJS:(NSString *)jsCode {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([self.webView respondsToSelector:@selector(evaluateJavaScript:completionHandler:)]) {
+            [(WKWebView *)self.webView evaluateJavaScript:jsCode completionHandler:nil];
+        } else {
+            [self.webViewEngine evaluateJavaScript:jsCode completionHandler:nil];
+        }
+    });
 }
 
 -(void) appEnterBackground

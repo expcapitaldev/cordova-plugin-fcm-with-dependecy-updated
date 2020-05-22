@@ -14,6 +14,10 @@
 ## Authorship
 This is a fork from https://github.com/fechanique/cordova-plugin-fcm, which has dependencies versions upgraded, jitpack and cocoapods support, and newer features.
 
+### Version 4.2.3 (22/05/2020)
+
+Replaced `UIWebView` with `WKWebView`, as required by Apple (https://developer.apple.com/documentation/uikit/uiwebview).
+
 ### Version 4.1.0 (26/10/2019)
 
 Older notifications can be cleared from notification center.
