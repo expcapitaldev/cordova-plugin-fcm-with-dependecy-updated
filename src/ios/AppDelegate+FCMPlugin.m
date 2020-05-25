@@ -128,6 +128,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
             stringByReplacingOccurrencesOfString:@" " withString:@""];
     }
     apnsToken = deviceToken;
+    [FCMPlugin.fcmPlugin notifyAPNSTokenRefresh:deviceToken];
     NSLog(@"Device APNS Token: %@", deviceToken);
     if (@available(iOS 10, *)) {
         return;

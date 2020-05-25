@@ -33,6 +33,15 @@ FCMPlugin.prototype.onNotification = function (callback, success, error) {
 // TOKEN REFRESH CALLBACK //
 FCMPlugin.prototype.onTokenRefresh = function (callback) {
   FCMPlugin.prototype.onTokenRefreshReceived = callback;
+  if (cordova.platformId === "ios") { // command must be send only on android, ios works fine with onTokenRefreshReceived
+	return;
+  }
+  exec(null, null, "FCMPlugin", "onTokenRefreshReceived", []);
+};
+
+// APNS TOKEN REFRESH CALLBACK //
+FCMPlugin.prototype.onAPNSTokenRefresh = function(callback) {
+	FCMPlugin.prototype.onAPNSTokenRefreshReceived = callback;
 };
 
 // GET TOKEN //
@@ -89,6 +98,12 @@ FCMPlugin.prototype.onNotificationReceived = function (payload) {
 FCMPlugin.prototype.onTokenRefreshReceived = function (token) {
   console.log("Received token refresh");
   console.log(token);
+};
+
+// DEFAULT APNS TOKEN REFRESH CALLBACK //
+FCMPlugin.prototype.onAPNSTokenRefreshReceived = function(token) {
+	console.log("Received APNS token refresh");
+	console.log(token);
 };
 
 // FIRE READY //

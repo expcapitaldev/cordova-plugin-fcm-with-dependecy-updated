@@ -17,6 +17,7 @@ static BOOL appInForeground = YES;
 
 static NSString *notificationCallback = @"FCMPlugin.onNotificationReceived";
 static NSString *tokenRefreshCallback = @"FCMPlugin.onTokenRefreshReceived";
+static NSString *apnsTokenRefreshCallback = @"FCMPlugin.onAPNSTokenRefreshReceived";
 static FCMPlugin *fcmPluginInstance;
 
 + (FCMPlugin *)fcmPlugin {
@@ -157,6 +158,14 @@ static FCMPlugin *fcmPluginInstance;
     NSString* notifyJS = [NSString stringWithFormat:@"%@('%@');", tokenRefreshCallback, token];
     NSLog(@"stringByEvaluatingJavaScriptFromString %@", notifyJS);
     [self runJS:notifyJS];
+}
+
+-(void) notifyAPNSTokenRefresh:(NSString *)token
+{
+    NSLog(@"notifyAPNSTokenRefresh token: %@", token);
+    NSString* notifyJS = [NSString stringWithFormat:@"%@('%@');", apnsTokenRefreshCallback, token];
+    NSLog(@"stringByEvaluatingJavaScriptFromString %@", notifyJS);
+    [self runJS: notifyJS];
 }
 
 - (void)runJS:(NSString *)jsCode {

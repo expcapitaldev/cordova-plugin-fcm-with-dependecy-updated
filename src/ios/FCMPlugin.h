@@ -5,6 +5,7 @@
 
 + (FCMPlugin *) fcmPlugin;
 - (void)notifyFCMTokenRefresh:(NSString*) token;
+- (void)notifyAPNSTokenRefresh:(NSString*) token;
 - (void)ready:(CDVInvokedUrlCommand*)command;
 - (void)hasPermission:(CDVInvokedUrlCommand*)command;
 - (void)getToken:(CDVInvokedUrlCommand*)command;
