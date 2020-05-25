@@ -15,6 +15,28 @@
 
 After a lot of work, the first release of the plugin https://github.com/andrehtissot/cordova-plugin-fcm-image-support is out. Which should enable the support, just by installing it.
 
+### Version 6.4.0-dev (25/05/2020)
+
+For Android: 
+- Bug fix
+```javascript
+//FCMPlugin.onTokenRefresh( onTokenRefreshCallback(token) );
+//Note that this callback will be fired everytime a new token is generated, including the first time.
+FCMPlugin.onTokenRefresh(function(token){
+    alert( token );
+});
+```
+
+For iOS:
+- Feature:
+```javascript
+//FCMPlugin.onAPNSTokenRefresh( onAPNSTokenRefreshCallback(apnsToken) );
+//Note that this callback will be fired everytime a new APNS token is generated, including the first time.
+FCMPlugin.onAPNSTokenRefresh(function(apnsToken){
+    alert( apnsToken );
+});
+```
+
 ### Version 6.4.0 (21/05/2020)
 
 The `FCMPlugin.requestPushPermissionIOS` function now, not only triggers the request alert, but also returns, as boolean, if the permission was given.
