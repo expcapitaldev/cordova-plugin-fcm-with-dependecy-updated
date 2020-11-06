@@ -15,6 +15,10 @@
 
 After a lot of work, the first release of the plugin https://github.com/andrehtissot/cordova-plugin-fcm-image-support is out. Which should enable the support, just by installing it.
 
+### Version 6.4.0-dev2 (06/11/2020)
+
+fix(iOS): podspec fix
+
 ### Version 6.4.0-dev (25/05/2020)
 
 For Android: 
