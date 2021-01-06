@@ -21,10 +21,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(String token) {
         super.onNewToken(token);
         Log.d(TAG, "New token: " + token);
-
-        // https://firebase.google.com/docs/cloud-messaging/android/client#monitor-token-generation
-		// https://firebase.google.com/docs/reference/android/com/google/firebase/messaging/FirebaseMessagingService.html#public-method-summary
-		FCMPlugin.onTokenRefresh(token);
+        FCMPlugin.sendTokenRefresh(token);
     }
 
     /**
@@ -55,13 +52,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         for (String key : remoteMessage.getData().keySet()) {
-                Object value = remoteMessage.getData().get(key);
-                Log.d(TAG, "\tKey: " + key + " Value: " + value);
-                data.put(key, value);
+            Object value = remoteMessage.getData().get(key);
+            Log.d(TAG, "\tKey: " + key + " Value: " + value);
+            data.put(key, value);
         }
         
         Log.d(TAG, "\tNotification Data: " + data.toString());
-        FCMPlugin.sendPushPayload( data );
+        FCMPlugin.sendPushPayload(data);
     }
     // [END receive_message]
 }

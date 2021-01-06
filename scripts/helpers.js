@@ -40,7 +40,7 @@ exports.logWarning = function (message) {
 
 exports.getValueFromXml = function (xmlFilePath, name, errorMessage) {
     var config = fs.readFileSync(xmlFilePath).toString();
-    var value = config.match(new RegExp('<' + name + '>(.*?)</' + name + '>', 'i'));
+    var value = config.match(new RegExp('<' + name + '[^>]*>(.*?)</' + name + '>', 'i'));
     if (value && value[1]) {
         return value[1];
     } else {
@@ -53,11 +53,9 @@ exports.getGoogleServiceContent = function (platform) {
     var googleServiceSourcePath = exports.findExistingFilePath(platform.googleServiceSources);
     if (!googleServiceSourcePath) {
         if (platform.label === 'android') {
-            exports.logError('Android-specific google-services.json file not found!');
-			throw Error('Android-specific google-services.json file not found!');
+            exports.logWarning('Android-specific google-services.json file not found!');
         } else {
-            exports.logError('iOS-specific GoogleService-Info.plist file not found!');
-			throw Error('iOS-specific GoogleService-Info.plist file not found!');
+            exports.logWarning('iOS-specific GoogleService-Info.plist file not found!');
         }
         return null;
     }
@@ -68,4 +66,27 @@ exports.getGoogleServiceContent = function (platform) {
         exports.logError('Error on trying to read ' + googleServiceSourcePath, error);
         return null;
     }
+};
+
+exports.execute = function (command, args) {
+    return new Promise(function (resolve, reject) {
+        try {
+            const spawn = require('child_process').spawn;
+            const child = spawn(command, args);
+            const stdout = [];
+            child.stdout.on('data', function (buffer) {
+                const lines = buffer.toString().split('\n');
+                for (const line of lines) {
+                    if (line !== '') {
+                        stdout.push(line);
+                    }
+                }
+            });
+            child.stdout.on('end', function () {
+                resolve(stdout.join('\n'));
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
 };
