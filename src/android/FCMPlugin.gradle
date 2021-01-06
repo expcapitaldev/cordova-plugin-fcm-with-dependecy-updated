@@ -8,14 +8,18 @@ buildscript {
         println("+-----------------------------------------------------------------");
 
         try {
+        println("| 1- ");
             // Load configuration from install variables (package.json) two directories above
             def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../package.json").text).cordova.plugins['cordova-plugin-fcm-with-dependecy-updated']
             ANDROID_GRADLE_TOOLS_VERSION = PLUGIN_CONFIG.ANDROID_GRADLE_TOOLS_VERSION
+            println("| 1 " + ANDROID_GRADLE_TOOLS_VERSION);
         } catch(Exception e0) {
             try {
+            	println("| 2- ");
                 // Load configuration from install variables (package.json) three directories above
                 def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../../package.json").text).cordova.plugins['cordova-plugin-fcm-with-dependecy-updated']
                 ANDROID_GRADLE_TOOLS_VERSION = PLUGIN_CONFIG.ANDROID_GRADLE_TOOLS_VERSION
+                 println("| 2 " + ANDROID_GRADLE_TOOLS_VERSION);
             } catch(Exception e1) {
                 def WARNING_STYLE = "${(char)27}[33;49"+"m"
                 def DEFAULT_STYLE = "${(char)27}[39;49"+"m"
@@ -24,6 +28,7 @@ buildscript {
         }
         // Override config with project values if available
         ANDROID_GRADLE_TOOLS_VERSION = rootProject.hasProperty('ANDROID_GRADLE_TOOLS_VERSION') ? rootProject.ext.ANDROID_GRADLE_TOOLS_VERSION : ANDROID_GRADLE_TOOLS_VERSION
+         println("| 3 " + ANDROID_GRADLE_TOOLS_VERSION);
         ext.gradleNumberVersion = ANDROID_GRADLE_TOOLS_VERSION.substring(0, ANDROID_GRADLE_TOOLS_VERSION.lastIndexOf(".")).toFloat()
     }
     repositories {
@@ -111,6 +116,6 @@ dependencies {
 }
 // apply plugin: 'com.google.gms.google-services'
 // class must be used instead of id(string) to be able to apply plugin from non-root gradle file
-// if (!project.plugins.hasPlugin('com.google.gms.google-services')) {
-//     apply plugin: com.google.gms.googleservices.GoogleServicesPlugin
-// }
+if (!project.plugins.hasPlugin('com.google.gms.google-services')) {
+    apply plugin: com.google.gms.googleservices.GoogleServicesPlugin
+}
