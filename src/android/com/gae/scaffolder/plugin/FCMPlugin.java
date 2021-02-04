@@ -27,11 +27,14 @@ import java.util.Map;
 public class FCMPlugin extends CordovaPlugin {
     public static String notificationEventName = "notification";
     public static String tokenRefreshEventName = "tokenRefresh";
+    public static Boolean onTokenRefreshCallBackReady = false;
     public static Map<String, Object> initialPushPayload;
     public static final String TAG = "FCMPlugin";
     private static FCMPlugin instance;
     protected Context context;
     protected static CallbackContext jsEventBridgeCallbackContext;
+
+    private static String fcmToken = null;
 
     public FCMPlugin() {}
     public FCMPlugin(Context context) {
@@ -140,7 +143,10 @@ public class FCMPlugin extends CordovaPlugin {
                 this.deleteInstanceId(callbackContext);
             } else if (action.equals("hasPermission")) {
                 this.hasPermission(callbackContext);
-            } else {
+            } else if (action.equals("onTokenRefreshReceived")) {
+				onTokenRefreshCallBackReady = true;
+				FCMPlugin.sendTokenRefresh();
+			} else {
                 callbackContext.error("Method not found");
                 return false;
             }
@@ -195,6 +201,7 @@ public class FCMPlugin extends CordovaPlugin {
 
                     // Get new Instance ID token
                     String newToken = task.getResult().getToken();
+                    fcmToken = newToken;
 
                     Log.i(TAG, "\tToken: " + newToken);
                     callback.success(newToken);
@@ -303,19 +310,32 @@ public class FCMPlugin extends CordovaPlugin {
         }
     }
 
-    public static void sendTokenRefresh(String token) {
-        Log.d(TAG, "==> FCMPlugin sendTokenRefresh");
-        try {
-            FCMPlugin.dispatchJSEvent(tokenRefreshEventName, "\"" + token + "\"");
-        } catch (Exception e) {
-            Log.d(TAG, "\tERROR sendTokenRefresh: " + e.getMessage());
-        }
-    }
+    public static void sendTokenRefresh() {
+		Log.d(TAG, "==> FCMPlugin sendRefreshToken");
+		Log.d(TAG, "\tonTokenRefreshCallBackReady: " + onTokenRefreshCallBackReady);
+
+		if (onTokenRefreshCallBackReady && fcmToken != null) {
+			try {
+				FCMPlugin.dispatchJSEvent(tokenRefreshEventName, "\"" + fcmToken + "\"");
+			} catch (Exception e) {
+				Log.d(TAG, "\tERROR sendTokenRefresh: " + e.getMessage());
+			}
+		} else {
+			Log.d(TAG, "\tsendTokenRefresh not ready");
+		}
+	}
+
+    public static void onTokenRefresh(String token) {
+		Log.d(TAG, "==> FCMPlugin onTokenRefresh");
+		fcmToken = token;
+		FCMPlugin.sendTokenRefresh();
+	}
 
     @Override
     public void onDestroy() {
         initialPushPayload = null;
         jsEventBridgeCallbackContext = null;
+        onTokenRefreshCallBackReady = false;
     }
 
     protected Context getContext() {

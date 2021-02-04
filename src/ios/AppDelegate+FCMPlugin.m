@@ -81,6 +81,11 @@ FCMNotificationCenterDelegate *notificationCenterDelegate;
             stringByReplacingOccurrencesOfString:@">" withString:@""]
             stringByReplacingOccurrencesOfString:@" " withString:@""];
     }
+    if ([apnsToken isEqualToString:deviceToken]) {
+    	// do something when they are the same
+    } else {
+    	[FCMPlugin.fcmPlugin notifyAPNSTokenRefresh:deviceToken];
+    }
     apnsToken = deviceToken;
     NSLog(@"Device APNS Token: %@", deviceToken);
     if (@available(iOS 10, *)) {

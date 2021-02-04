@@ -5,10 +5,13 @@
 
 + (FCMPlugin *) fcmPlugin;
 - (void)notifyFCMTokenRefresh:(NSString*) token;
+- (void)notifyAPNSTokenRefresh:(NSString*) token;
 - (void)ready:(CDVInvokedUrlCommand*)command;
 - (void)hasPermission:(CDVInvokedUrlCommand*)command;
 - (void)getToken:(CDVInvokedUrlCommand*)command;
 - (void)returnTokenOrRetry:(void (^)(NSString* fcmToken))onSuccess;
+- (void)onAPNSTokenRefreshReceived:(CDVInvokedUrlCommand*)command;
+- (void)onTokenRefreshReceived:(CDVInvokedUrlCommand*)command;
 - (void)getAPNSToken:(CDVInvokedUrlCommand*)command;
 - (void)getInitialPushPayload:(CDVInvokedUrlCommand*)command;
 - (void)deleteInstanceId:(CDVInvokedUrlCommand*)command;
