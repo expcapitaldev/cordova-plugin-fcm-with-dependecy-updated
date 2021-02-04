@@ -143,7 +143,7 @@ export class FCMPlugin {
     /**
      * Callback firing when receiving a new Firebase token
      *
-     * @argument {(token: string) => void} callback function to be called when event is triggered
+     * @argument {(token: string) => void} callback function to be called when event is triggered, return token immediately if exist
      * @argument {{ once?: boolean }} options once defines if the listener is only trigger once
      * @returns {IDisposable} object of which can request the listener's disposal
      */
@@ -151,8 +151,28 @@ export class FCMPlugin {
         callback: (token: string) => void,
         options?: { once?: boolean }
     ): IDisposable {
-        return asDisposableListener(this.eventTarget, 'tokenRefresh', callback, options)
+    	let onTokenRefreshDispose: IDisposable = asDisposableListener(this.eventTarget, 'tokenRefresh', callback, options);
+		execAsPromise('onTokenRefreshReceived');
+    	return onTokenRefreshDispose;
     }
+
+	/**
+	 * Callback firing when apns token receiving
+	 *
+	 * @argument {(apnsToken: string) => void} callback function to be called when event is triggered, return apnsToken immediately if exist
+	 * @argument {{ once?: boolean }} options once defines if the listener is only trigger once
+	 * @returns {IDisposable} object of which can request the listener's disposal
+	 */
+	public onAPNSTokenRefresh(
+		callback: (apnsToken: string) => void,
+		options?: { once?: boolean }
+	): IDisposable {
+		let onAPNSTokenRefreshDispose: IDisposable = asDisposableListener(this.eventTarget, 'apnsTokenRefresh', callback, options);
+		if (window.cordova.platformId === 'ios') {
+			execAsPromise('onAPNSTokenRefreshReceived');
+		}
+		return onAPNSTokenRefreshDispose;
+	}
 
     /**
      * Request push notification permission, alerting the user if it not have yet decided

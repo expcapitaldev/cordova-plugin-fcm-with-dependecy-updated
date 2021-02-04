@@ -21,7 +21,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(String token) {
         super.onNewToken(token);
         Log.d(TAG, "New token: " + token);
-        FCMPlugin.sendTokenRefresh(token);
+        FCMPlugin.onTokenRefresh(token);
     }
 
     /**

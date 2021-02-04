@@ -89,13 +89,23 @@ export declare class FCMPlugin {
     /**
      * Callback firing when receiving a new Firebase token
      *
-     * @argument {(token: string) => void} callback function to be called when event is triggered
+     * @argument {(token: string) => void} callback function to be called when event is triggered, return token immediately if exist
      * @argument {{ once?: boolean }} options once defines if the listener is only trigger once
      * @returns {IDisposable} object of which can request the listener's disposal
      */
     onTokenRefresh(callback: (token: string) => void, options?: {
         once?: boolean;
     }): IDisposable;
+	/**
+	 * Callback firing when apns token receiving
+	 *
+	 * @argument {(apnsToken: string) => void} callback function to be called when event is triggered, return apnsToken immediately if exist
+	 * @argument {{ once?: boolean }} options once defines if the listener is only trigger once
+	 * @returns {IDisposable} object of which can request the listener's disposal
+	 */
+	onAPNSTokenRefresh(callback: (apnsToken: string) => void, options?: {
+		once?: boolean;
+	}): IDisposable;
     /**
      * Request push notification permission, alerting the user if it not have yet decided
      *

@@ -2,6 +2,28 @@
 
 ## Version 7
 
+### Version 7.8.0-dev (04/02/2021)
+
+For Android: 
+- Feature
+```javascript
+//FCMPlugin.onTokenRefresh( onTokenRefreshCallback(token) );
+//Note that this callback will be fired everytime a new token is generated, including the first time.
+FCMPlugin.onTokenRefresh(function(token){
+    alert( token );
+});
+```
+
+For iOS:
+- Feature:
+```javascript
+//FCMPlugin.onAPNSTokenRefresh( onAPNSTokenRefreshCallback(apnsToken) );
+//Note that this callback will be fired everytime a new APNS token is generated, including the first time.
+FCMPlugin.onAPNSTokenRefresh(function(apnsToken){
+    alert( apnsToken );
+});
+```
+
 ### Version 7.8.0 (03/02/2020)
 
 - IOS_FIREBASE_MESSAGING_VERSION upgraded to 7.4.0;

@@ -75,9 +75,18 @@ var FCMPlugin = (function () {
     FCMPlugin.prototype.onNotification = function (callback, options) {
         return asDisposableListener(this.eventTarget, 'notification', callback, options);
     };
-    FCMPlugin.prototype.onTokenRefresh = function (callback, options) {
-        return asDisposableListener(this.eventTarget, 'tokenRefresh', callback, options);
-    };
+	FCMPlugin.prototype.onTokenRefresh = function (callback, options) {
+		var onTokenRefreshDispose = asDisposableListener(this.eventTarget, 'tokenRefresh', callback, options);
+		execAsPromise('onTokenRefreshReceived');
+		return onTokenRefreshDispose;
+	};
+	FCMPlugin.prototype.onAPNSTokenRefresh = function (callback, options) {
+		var onAPNSTokenRefreshDispose = asDisposableListener(this.eventTarget, 'apnsTokenRefresh', callback, options);
+		if (window.cordova.platformId === 'ios') {
+			execAsPromise('onAPNSTokenRefreshReceived');
+		}
+		return onAPNSTokenRefreshDispose;
+	};
     FCMPlugin.prototype.requestPushPermission = function (options) {
         var _a, _b, _c, _d;
         if (window.cordova.platformId !== 'ios') {

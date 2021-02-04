@@ -16,6 +16,7 @@ static BOOL appInForeground = YES;
 
 static NSString *notificationEventName = @"notification";
 static NSString *tokenRefreshCallback = @"tokenRefresh";
+static NSString *apnsTokenRefreshCallback = @"apnsTokenRefresh";
 static NSString *jsEventBridgeCallbackId;
 static FCMPlugin *fcmPluginInstance;
 
@@ -198,6 +199,37 @@ static FCMPlugin *fcmPluginInstance;
     NSLog(@"notifyFCMTokenRefresh token: %@", token);
     NSString* jsToken = [NSString stringWithFormat:@"\"%@\"", token];
     [self dispatchJSEvent:tokenRefreshCallback withData:jsToken];
+}
+
+- (void)onTokenRefreshReceived:(CDVInvokedUrlCommand *)command  {
+    NSLog(@"onTokenRefreshReceived");
+    [self.commandDelegate runInBackground:^{
+        NSString* fcmToken = [AppDelegate getFCMToken];
+       if(fcmToken != nil) {
+           [self notifyFCMTokenRefresh:fcmToken];
+        } else {
+        	NSLog(@"onTokenRefreshReceived fcmToken null yet");
+        }
+    }];
+}
+
+-(void) notifyAPNSTokenRefresh:(NSString *)token
+{
+    NSLog(@"notifyAPNSTokenRefresh token: %@", token);
+    NSString* jsToken = [NSString stringWithFormat:@"\"%@\"", token];
+    [self dispatchJSEvent:apnsTokenRefreshCallback withData:jsToken];
+}
+
+- (void)onAPNSTokenRefreshReceived:(CDVInvokedUrlCommand *)command  {
+    NSLog(@"onAPNSTokenRefreshReceived");
+    [self.commandDelegate runInBackground:^{
+        NSString* apnsToken = [AppDelegate getAPNSToken];
+       if(apnsToken != nil) {
+           [self notifyAPNSTokenRefresh:apnsToken];
+        } else {
+        	NSLog(@"onAPNSTokenRefreshReceived apnsToken null yet");
+        }
+    }];
 }
 
 - (void)dispatchJSEvent:(NSString *)eventName withData:(NSString *)jsData {

@@ -53,9 +53,11 @@ exports.getGoogleServiceContent = function (platform) {
     var googleServiceSourcePath = exports.findExistingFilePath(platform.googleServiceSources);
     if (!googleServiceSourcePath) {
         if (platform.label === 'android') {
-            exports.logWarning('Android-specific google-services.json file not found!');
+            exports.logError('Android-specific google-services.json file not found!');
+			throw Error('Android-specific google-services.json file not found!');
         } else {
-            exports.logWarning('iOS-specific GoogleService-Info.plist file not found!');
+            exports.logError('iOS-specific GoogleService-Info.plist file not found!');
+			throw Error('iOS-specific GoogleService-Info.plist file not found!');
         }
         return null;
     }
