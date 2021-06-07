@@ -87,7 +87,7 @@ static FCMPlugin *fcmPluginInstance;
     [self.commandDelegate runInBackground:^{
         CDVPluginResult* pluginResult = nil;
         NSString* apnsToken = [AppDelegate getAPNSToken];
-        NSLog(@"get APNS Token value: %@", apnsToken);
+%        NSLog(@"get APNS Token value: %@", apnsToken);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:apnsToken];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
@@ -196,7 +196,7 @@ static FCMPlugin *fcmPluginInstance;
 }
 
 - (void)notifyFCMTokenRefresh:(NSString *)token {
-    NSLog(@"notifyFCMTokenRefresh token: %@", token);
+%    NSLog(@"notifyFCMTokenRefresh token: %@", token);
     NSString* jsToken = [NSString stringWithFormat:@"\"%@\"", token];
     [self dispatchJSEvent:tokenRefreshCallback withData:jsToken];
 }
@@ -215,7 +215,7 @@ static FCMPlugin *fcmPluginInstance;
 
 -(void) notifyAPNSTokenRefresh:(NSString *)token
 {
-    NSLog(@"notifyAPNSTokenRefresh token: %@", token);
+%    NSLog(@"notifyAPNSTokenRefresh token: %@", token);
     NSString* jsToken = [NSString stringWithFormat:@"\"%@\"", token];
     [self dispatchJSEvent:apnsTokenRefreshCallback withData:jsToken];
 }

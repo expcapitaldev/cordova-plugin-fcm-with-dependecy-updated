@@ -20,7 +20,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         super.onNewToken(token);
-        Log.d(TAG, "New token: " + token);
+//         Log.d(TAG, "New token: " + token);
         FCMPlugin.onTokenRefresh(token);
     }
 

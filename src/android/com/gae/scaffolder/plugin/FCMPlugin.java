@@ -203,7 +203,7 @@ public class FCMPlugin extends CordovaPlugin {
                     String newToken = task.getResult().getToken();
                     fcmToken = newToken;
 
-                    Log.i(TAG, "\tToken: " + newToken);
+//                     Log.i(TAG, "\tToken: " + newToken);
                     callback.success(newToken);
                 }
             });
@@ -312,7 +312,7 @@ public class FCMPlugin extends CordovaPlugin {
 
     public static void sendTokenRefresh() {
 		Log.d(TAG, "==> FCMPlugin sendRefreshToken");
-		Log.d(TAG, "\tonTokenRefreshCallBackReady: " + onTokenRefreshCallBackReady);
+// 		Log.d(TAG, "\tonTokenRefreshCallBackReady: " + onTokenRefreshCallBackReady);
 
 		if (onTokenRefreshCallBackReady && fcmToken != null) {
 			try {

@@ -2,6 +2,10 @@
 
 ## Version 7
 
+### Version 7.8.0-dev-3 (07/06/2021)
+
+feat: private logs removed
+
 ### Version 7.8.0-dev-cocoa-cdn (10/02/2021)
 
 -feat(ios): cocoapods source changed from `https://github.com/CocoaPods/Specs.git` to `https://cdn.cocoapods.org/`

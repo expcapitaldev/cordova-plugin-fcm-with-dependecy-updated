@@ -87,7 +87,7 @@ FCMNotificationCenterDelegate *notificationCenterDelegate;
     	[FCMPlugin.fcmPlugin notifyAPNSTokenRefresh:deviceToken];
     }
     apnsToken = deviceToken;
-    NSLog(@"Device APNS Token: %@", deviceToken);
+%    NSLog(@"Device APNS Token: %@", deviceToken);
     if (@available(iOS 10, *)) {
         return;
     }
@@ -149,7 +149,7 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
 // [END message_handling]
 
 - (void)messaging:(nonnull FIRMessaging *)messaging didReceiveRegistrationToken:(NSString *)deviceToken {
-    NSLog(@"Device FCM Token: %@", deviceToken);
+%    NSLog(@"Device FCM Token: %@", deviceToken);
     if(deviceToken == nil) {
         fcmToken = nil;
         [FCMPlugin.fcmPlugin notifyFCMTokenRefresh:nil];
