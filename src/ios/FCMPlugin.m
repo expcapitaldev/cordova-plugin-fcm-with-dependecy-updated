@@ -60,6 +60,10 @@ static FCMPlugin *fcmPluginInstance;
 
 - (void)getToken:(CDVInvokedUrlCommand *)command {
     NSLog(@"get Token");
+
+    NSString *reason = @"qqq sentry crash test 2";
+            @throw [NSException exceptionWithName:@"InvalidOperationException" reason:reason userInfo:nil];
+
     [self returnTokenOrRetry:^(NSString* fcmToken){
         CDVPluginResult* pluginResult = nil;
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:fcmToken];
