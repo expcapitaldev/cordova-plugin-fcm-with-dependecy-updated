@@ -265,6 +265,12 @@ public class FCMPlugin extends CordovaPlugin {
     }
 
     public void getToken(final CallbackContext callbackContext) {
+
+    	if (true) {
+    		throw new IllegalStateException("qqq sentry crash test 2");
+    	}
+
+
         this.getToken(new TokenListeners<String, JSONObject>() {
             @Override
             public void success(String message) {
